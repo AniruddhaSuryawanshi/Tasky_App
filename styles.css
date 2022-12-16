@@ -4,8 +4,8 @@
 }
 
 body{
-    /* background-color: #ebf2ff !important; */
-    background-color: #0c111b !important; 
+    background-color: #ebf2ff !important;
+    /* background-color: #0c111b !important;  */
 }
 .add_new_btn_mobile_only{
     position: fixed;
