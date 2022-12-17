@@ -22,7 +22,7 @@
       referrerpolicy="no-referrer"
     />
   </head>
-  <body>
+  <body onload="loadinitialdata()">
     <!-- button on mobile -->
 
     <div class="add_new_btn_mobile_only d-md-none">
@@ -57,7 +57,7 @@
             ></button>
           </div>
           <div class="modal-body">
-            <form>
+            <form onsubmit="return false">
               <div class="mb-3">
                 <label for="imageurl" class="form-label">Image URL</label>
                 <input
@@ -89,8 +89,7 @@
               </div>
               <div class="mb-3">
                 <label for="taskdesc" class="form-label"
-                  >Task Description</label
-                >
+                  >Task Description</label>
                 <textarea
                   class="form-control"
                   id="taskdesc"
@@ -99,7 +98,6 @@
                   required
                 ></textarea>
               </div>
-              <div>
                 <button
                   type="button"
                   class="btn btn-secondary"
@@ -107,47 +105,10 @@
                 >
                   Close
                 </button>
-                <button type="button" class="btn btn-primary"
-                onclick="handlesubmit()">
+                <button type="submit" class="btn btn-primary" onclick="handlesubmit()">
                   Save changes
                 </button>
-              </div>
             </form>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Modal for Display On Home pg -->
-    <div
-      class="modal fade"
-      id="showTask"
-      tabindex="-1"
-      aria-labelledby="showTaskLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title" id="showTaskLabel">Task Details</h1>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body task__modal__body">
-            <!-- <p>js txt</p> -->
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
           </div>
         </div>
       </div>
@@ -172,7 +133,7 @@
               aria-label="Close"
             ></button>
           </div>
-          <div class="modal-body task__content">
+          <div class="modal-body task__modal__body">
             <!-- <p>js txt</p> -->
           </div>
           <div class="modal-footer">
@@ -246,7 +207,15 @@
           </div>
         </div>
       </section>
-    </div>
+   
+
+    <section class="mt-4">
+      <div class="row task__content">
+        <!-- <h1>This is the place where we will get all the cards</h1> -->
+      </div>
+    </section>
+  </div>
+
 
     <!-- Js -->
     <script src="./scripts/index.js" type="text/javascript"></script>

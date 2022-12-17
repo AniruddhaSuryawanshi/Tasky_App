@@ -12,36 +12,42 @@ const taskcontent = document.querySelector(".task__content");
 // This is to push the data to HTML
 const htmlTaskContent = ({ id, title, description, type, url }) =>
   `
-<div class='col-md-6 col-lg-4 mt-3' id=${id}key=${id}>
-<div class='card shadow-sm tasl__card'>
-<div class='card-header d-flex justify-content-end task__card__header'>
-<button type='button' class='btn btn-outline-info mr-2' name=${id}>
-<i class='fa fa-pencil-alt' name=${id}></i>
-</button>
-<button type='button' class='btn btn-outline-danger mr-2' name=${id}>
-<i class='fa fa-trash-alt' name=${id}></i>
-</button> 
-
-<div class='card-body'>
-${
-  url &&
-  `<img width='100%' src=${url} alt='card image here' class='card-image-top md-3 rounded-lg '/>`
-}
-<h4 class='task__card__title'> ${title}</h4>
-<p class='description trim-3-lines text-muted' data-gram_editor='false'>${description}
-</p>
-<div class='tags text-white d-flex flex-wrap'>
-<span class='badge bg-primary m-1'>${type}</span>
+  <div class='col-md-6 col-lg-4 mt-3' id=${id}key=${id}>
+    <div class='card shadow-sm task__card'>
+      <div class='card-header d-flex justify-content-end task__card__header'>
+        <button type='button' class='btn btn-outline-info mr-2' name=${id}>
+          <i class='fa fa-pencil-alt' name=${id}></i>
+        </button>
+        <button type='button' class='btn btn-outline-danger mr-2' name=${id}>
+          <i class='fa fa-trash-alt' name=${id}></i>
+        </button> 
 </div>
-</div>
-<div class='card-footer'>
-<button type='button' class='btn btn-outline-primary data-bs-toggle="modal" data-bs-target="#showTask"'>Open Task
-</button> 
-</div>
-</div>
-</div>
-
-</div>
+          <div class='card-body'>
+            ${
+              url
+                ? `<img width='100%' src=${url} alt='card image here' class='card-image-top md-3 rounded-lg '/>`
+                : `<img width='100%' src='https://complianz.io/wp-content/uploads/2019/03/placeholder-300x202.jpg' alt='card image here' class='card-image-top md-3 rounded-lg '/>`
+            }
+            <h4 class='task__card__title'> ${title}</h4>
+            <p class='description trim-3-lines text-muted' data-gram_editor='false'>${description}
+            </p>
+            <div class='tags text-white d-flex flex-wrap'>
+              <span class='badge bg-primary m-1'>${type}</span>
+            </div>
+          </div>
+          <div class='card-footer'>
+            <button type='button' 
+            class='btn btn-outline-primary float-right'
+            data-bs-toggle='modal'
+            data-bs-target='#showTask'
+            id=${id}
+            onclick='openTask.apply(this,arguments)'>
+            Open Task
+            </button> 
+        </div>
+      
+    </div>
+  </div>
 `;
 
 // modal in big view
@@ -51,12 +57,13 @@ const htmlModalcontent = ({ id, title, description, type, url }) => {
   return `
   <div id=${id}>
    ${
-     url &&
+     url ?
      `<img width='100%' src=${url} alt='card image here' class='img-fluid place__holder__image mb-3'/>`
-   }
+     : `<img width='100%' src='https://complianz.io/wp-content/uploads/2019/03/placeholder-300x202.jpg' alt='card image here' class='card-image-top md-3 rounded-lg '/>`
+    }
    <strong class='text-sm text-muted'>Created on ${date.toDateString()}</strong>
   <h2 class='my-3'>${title}</h2>
-  <p class='lead '>${description}}</p> 
+  <p class='lead '>${description}</p> 
   <span class='badge bg-primary m-1'>${type}</span>
   </div>
   `;
@@ -70,7 +77,7 @@ const updatelocalstorage = () => {
     "task",
     JSON.stringify({
       // to access array from object
-      task: state.tasklist,
+      tasks: state.tasklist,
     })
   );
 };
@@ -80,25 +87,26 @@ const loadinitialdata = () => {
   const localStoragecopy = JSON.parse(localStorage.task);
   // we are storing the data object in "task"
 
-  if (localStoragecopy) state.tasklist = localStoragecopy.task;
+  if (localStoragecopy) state.tasklist = localStoragecopy.tasks;
   // if localstorage is true or false means if it has any data or not
-  state.tasklist.map((cardData) => {
-    taskcontent.insertAdjacentHTML("beforeend", htmlTaskContent(cardData));
+  state.tasklist.map((cardDate) => {
+    taskcontent.insertAdjacentHTML("beforeend", htmlTaskContent(cardDate));
     // adjacenthtml has to do with positions, beforebegin etc named based on div/p/span
   });
 };
 // for saving data of form
 const handlesubmit = (event) => {
-  const id = '${date.now()}';
+  const id = `${Date.now()}`;
   const input = {
     url: document.getElementById("imageurl").value,
     title: document.getElementById("tasktitle").value,
-    description: document.getElementById("taskdesc").value,
     type: document.getElementById("tasktype").value,
+    description: document.getElementById("taskdesc").value,
+
     // .value to access the data
   };
-  if(input.title===''|| input.title===''|| input.description=== ''){
-    return alert("Please Fill all the Fields")
+  if (input.title === "" || input.type === "" || input.description === "") {
+    return alert("Please Fill all the Fields");
   }
   taskcontent.insertAdjacentHTML(
     "beforeend",
@@ -108,7 +116,15 @@ const handlesubmit = (event) => {
       id,
     })
   );
-  state.tasklist.push({...input,id});
+  state.tasklist.push({ ...input, id });
   // update data on localstorage even after reloading
   updatelocalstorage();
+};
+
+const openTask = (e) => {
+  // give current card
+  if (!e) e = window.event;
+  // find current card
+  const getTask = state.tasklist.find(({ id }) => id === e.target.id);
+  taskModel.innerHTML = htmlModalcontent(getTask);
 };
